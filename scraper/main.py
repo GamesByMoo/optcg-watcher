@@ -32,7 +32,13 @@ def api(method: str, path: str, **kw):
     r = requests.request(method, f"{base}/api/{path}", headers=headers, timeout=120, **kw)
     if r.status_code >= 400:
         raise RuntimeError(f"API {path}: HTTP {r.status_code}: {r.text[:300]}")
-    return r.json()
+    try:
+        return r.json()
+    except ValueError:
+        raise RuntimeError(
+            f"API {path}: expected JSON but got HTTP {r.status_code}, "
+            f"type {r.headers.get('Content-Type')!r}, final URL {r.url}, body: {r.text[:500]!r}"
+        ) from None
 
 
 def scrape_shop(shop: dict, wanted_types: set, deadline: float, terms: list) -> dict:

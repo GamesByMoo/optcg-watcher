@@ -76,8 +76,13 @@ jobs:
           url="${OPT_API_URL%/}/api/setup.php"
           code=$(curl -sS -o resp.json -w "%{http_code}" -X POST -H "Authorization: Bearer $OPT_API_TOKEN" "$url" || true)
           cat resp.json || true; echo
-          if [ "$code" != "200" ]; then
-            echo "::error::Setup call to $url returned HTTP $code. Check that OPT_API_URL points to the uploaded folder and the database secrets are right."
+          if [ "$code" != "200" ] || ! grep -q '"ok":true' resp.json; then
+            if grep -qi "domain reserved" resp.json; then
+              echo "::error title=Domain not connected::$url shows the STRATO 'Domain reserved' page. Connect the domain to your webspace in the STRATO login (Domains -> Domainverwaltung)."
+            else
+              echo "::error title=Setup failed::$url returned HTTP $code: $(head -c 400 resp.json | tr '\n' ' '). Check OPT_API_URL, REMOTE_DIR and the database secrets."
+            fi
             exit 1
           fi
+          echo "::notice title=Setup done::$(cat resp.json)"
           echo "Done - open ${OPT_API_URL%/}/ and log in with your ADMIN_PASSWORD."

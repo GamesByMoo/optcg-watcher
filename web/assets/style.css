@@ -127,3 +127,8 @@ legend { font-size: .8rem; color: var(--muted); padding: 0 4px; }
 .badge.term { border-color: var(--accent); color: var(--accent); }
 .terms-form { display: grid; gap: 8px; max-width: 420px; }
 .terms-form button { justify-self: start; }
+.badge.not_orderable { color: var(--muted); border-style: dashed; }
+.offer.st-not_orderable { opacity: .7; }
+form.inline { display: inline; }
+form.inline button.link { font-size: inherit; padding: 0; }
+.hidden-link { font-weight: 400; margin-left: 8px; text-decoration: none; }

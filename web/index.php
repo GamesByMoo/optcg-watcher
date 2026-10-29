@@ -4,7 +4,18 @@ require __DIR__ . '/lib/bootstrap.php';
 require __DIR__ . '/lib/layout.php';
 require_login();
 
-$view = in_array($_GET['view'] ?? '', ['preorder', 'available', 'all'], true) ? $_GET['view'] : 'preorder';
+// "Not orderable" / "show again" buttons
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    check_csrf();
+    $hide = ($_POST['action'] ?? '') === 'hide' ? 1 : 0;
+    db()->prepare('UPDATE products SET hidden = ? WHERE id = ?')->execute([$hide, (int)($_POST['id'] ?? 0)]);
+    flash($hide ? 'Offer hidden – it no longer appears in the lists or alerts. Find it under "Hidden".' : 'Offer is shown again.');
+    $back = (string)($_POST['back'] ?? 'index.php');
+    header('Location: ' . (preg_match('#^index\.php(\?[^\r\n]*)?$#', $back) ? $back : 'index.php'));
+    exit;
+}
+
+$view = in_array($_GET['view'] ?? '', ['preorder', 'available', 'all', 'hidden'], true) ? $_GET['view'] : 'preorder';
 $country = in_array($_GET['country'] ?? '', ['DE', 'NL'], true) ? $_GET['country'] : '';
 $type = in_array($_GET['type'] ?? '', ['display', 'case', 'special'], true) ? $_GET['type'] : '';
 $q = trim((string)($_GET['q'] ?? ''));
@@ -12,11 +23,14 @@ $sort = in_array($_GET['sort'] ?? '', ['price', 'set', 'new'], true) ? $_GET['so
 
 $where = ['p.active = 1'];
 $args = [];
+$where[] = $view === 'hidden' ? 'p.hidden = 1' : 'p.hidden = 0';
 if ($view === 'preorder') {
     $where[] = "p.status = 'preorder'";
 } elseif ($view === 'available') {
     $where[] = "p.status = 'available'";
 }
+$status = in_array($_GET['status'] ?? '', ['preorder', 'available', 'sold_out', 'not_orderable'], true) ? $_GET['status'] : '';
+if ($view === 'all' && $status) { $where[] = 'p.status = ?'; $args[] = $status; }
 if ($country) { $where[] = 's.country = ?'; $args[] = $country; }
 if ($type) { $where[] = 'p.product_type = ?'; $args[] = $type; }
 if ($q !== '') {
@@ -47,7 +61,7 @@ $rows = $st->fetchAll();
 // cheapest offer per set + type (among the rows shown and buyable)
 $cheapest = [];
 foreach ($rows as $r) {
-    if ($r['price'] === null || $r['status'] === 'sold_out' || !$r['set_code']) continue;
+    if ($r['price'] === null || !in_array($r['status'], ['preorder', 'available'], true) || !$r['set_code'] || $r['hidden']) continue;
     $k = $r['set_code'] . '|' . $r['product_type'];
     if (!isset($cheapest[$k]) || (float)$r['price'] < $cheapest[$k]) $cheapest[$k] = (float)$r['price'];
 }
@@ -56,7 +70,7 @@ $rules = db()->query('SELECT * FROM alert_rules WHERE active = 1')->fetchAll();
 $terms = search_terms();
 $matchesRule = static function (array $p) use ($rules): ?array {
     foreach ($rules as $r) {
-        if ($p['price'] === null) return null;
+        if ($p['price'] === null || $p['hidden'] || !in_array($p['status'], ['preorder', 'available'], true)) return null;
         if ($r['product_type'] !== 'any' && $r['product_type'] !== $p['product_type']) continue;
         if ($r['country'] !== 'any' && $r['country'] !== $p['country']) continue;
         if ($r['statuses'] !== 'both' && $r['statuses'] !== $p['status']) continue;
@@ -66,9 +80,10 @@ $matchesRule = static function (array $p) use ($rules): ?array {
     return null;
 };
 
-$labels = ['preorder' => 'Preorder', 'available' => 'In stock', 'sold_out' => 'Sold out'];
-$titles = ['preorder' => 'Preorders', 'available' => 'Purchasable now', 'all' => 'All offers'];
-page_header($titles[$view], $view);
+$labels = ['preorder' => 'Preorder', 'available' => 'In stock', 'sold_out' => 'Sold out', 'not_orderable' => 'Listed – not orderable'];
+$titles = ['preorder' => 'Preorders', 'available' => 'Purchasable now', 'all' => 'All offers', 'hidden' => 'Hidden offers'];
+$back = 'index.php?' . http_build_query(array_filter(['view' => $view, 'q' => $q, 'country' => $country, 'type' => $type, 'sort' => $sort, 'status' => $status]));
+page_header($titles[$view], $view === 'hidden' ? 'all' : $view);
 ?>
 <form class="filters" method="get">
   <input type="hidden" name="view" value="<?= h($view) ?>">
@@ -84,6 +99,10 @@ page_header($titles[$view], $view);
     <option value="set" <?= $sort === 'set' ? 'selected' : '' ?>>Sort: set</option>
     <option value="price" <?= $sort === 'price' ? 'selected' : '' ?>>Sort: price</option>
     <option value="new" <?= $sort === 'new' ? 'selected' : '' ?>>Sort: newest</option></select>
+  <?php if ($view === 'all'): ?>
+  <select name="status"><option value="">Any status</option>
+    <?php foreach ($labels as $k => $l): ?><option value="<?= $k ?>" <?= $status === $k ? 'selected' : '' ?>><?= h($l) ?></option><?php endforeach; ?></select>
+  <?php endif; ?>
   <button>Filter</button>
 </form>
 <?php if ($terms): ?>
@@ -96,7 +115,9 @@ page_header($titles[$view], $view);
 </nav>
 <?php endif; ?>
 
-<h1><?= h($titles[$view]) ?> <span class="count"><?= count($rows) ?></span></h1>
+<h1><?= h($titles[$view]) ?> <span class="count"><?= count($rows) ?></span>
+  <?php if ($view !== 'hidden'): ?><a class="small muted hidden-link" href="index.php?view=hidden">Hidden offers →</a><?php endif; ?></h1>
+<?php if ($view === 'hidden'): ?><p class="muted">Offers you marked as not orderable. They are excluded from all lists and alerts until you show them again.</p><?php endif; ?>
 
 <?php if (!$rows): ?>
   <p class="empty">Nothing here yet<?= $q || $country || $type ? ' for this filter' : '' ?>.</p>
@@ -104,7 +125,7 @@ page_header($titles[$view], $view);
 <div class="offers">
 <?php foreach ($rows as $r):
     $rule = $matchesRule($r);
-    $isCheapest = $r['set_code'] && $r['price'] !== null && $r['status'] !== 'sold_out'
+    $isCheapest = $r['set_code'] && $r['price'] !== null && in_array($r['status'], ['preorder', 'available'], true)
         && abs(($cheapest[$r['set_code'] . '|' . $r['product_type']] ?? -1) - (float)$r['price']) < 0.001;
     $prev = $r['prev_price'] !== null ? (float)$r['prev_price'] : null;
     $term = matched_term($r['title'], $r['set_code'], $terms);
@@ -121,6 +142,10 @@ page_header($titles[$view], $view);
         · <?= h(ucfirst($r['product_type'])) ?>
         · since <?= h(date('d.m.', strtotime($r['first_seen']))) ?>
         · <a href="history.php?id=<?= (int)$r['id'] ?>">history</a>
+        · <form method="post" class="inline"><?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
+            <input type="hidden" name="back" value="<?= h($back) ?>">
+            <?php if ($r['hidden']): ?><button name="action" value="show" class="link">show again</button>
+            <?php else: ?><button name="action" value="hide" class="link" title="Can't actually be bought – hide it">not orderable</button><?php endif; ?></form>
       </div>
       <div class="tags">
         <span class="badge <?= h($r['status']) ?>"><?= h($labels[$r['status']] ?? $r['status']) ?></span>

@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS products (
   image            VARCHAR(1000) NULL,
   set_code         VARCHAR(10)  NULL,
   product_type     VARCHAR(10)  NOT NULL,
-  status           VARCHAR(10)  NOT NULL,
+  status           VARCHAR(20)  NOT NULL,          -- preorder | available | sold_out | not_orderable
+  hidden           TINYINT(1)   NOT NULL DEFAULT 0, -- hidden by you ("not orderable" button)
   price            DECIMAL(10,2) NULL,
   currency         CHAR(3)      NOT NULL DEFAULT 'EUR',
   first_seen       DATETIME     NOT NULL,
@@ -43,7 +44,7 @@ CREATE TABLE IF NOT EXISTS price_history (
   id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   product_id  INT UNSIGNED NOT NULL,
   price       DECIMAL(10,2) NULL,
-  status      VARCHAR(10)  NOT NULL,
+  status      VARCHAR(20)  NOT NULL,
   recorded_at DATETIME     NOT NULL,
   KEY idx_product (product_id, recorded_at),
   CONSTRAINT fk_history_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE

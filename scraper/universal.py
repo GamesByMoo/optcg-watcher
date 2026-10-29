@@ -46,6 +46,10 @@ SEARCH_PATTERNS = [
 
 AVAILABLE = {"instock", "limitedavailability", "onlineonly", "instoreonly", "preorder", "presale", "backorder"}
 UNAVAILABLE = {"outofstock", "soldout", "discontinued"}
+# An order button / cart form on the product page. Without one, a product is only "listed".
+CART_TEXT = re.compile(r"warenkorb|in\s*den\s*korb|kaufen|bestellen|vorbestellen|add\s*to\s*(cart|basket|bag)|"
+                       r"buy\s*now|pre-?order|winkelwagen|in\s*winkelmand|bestel|toevoegen|koop", re.I)
+CART_ATTR = re.compile(r"cart|basket|warenkorb|checkout|winkelwagen|buy-?box|add-?to|addtocart|purchase", re.I)
 STATUS_HINT = re.compile(r"deliver|liefer|availab|verf(ü|ue)gbar|stock|lager|voorraad|levertijd|release|preorder|"
                          r"pre-order|vorbestell|voorverkoop|erschein|buy|cart|warenkorb|winkelwagen", re.I)
 
@@ -274,6 +278,8 @@ def parse_product_page(html: str, url: str) -> dict | None:
         hints.append(el.get_text(" ", strip=True) or el.get("value", ""))
 
     available = True if avail in AVAILABLE else False if avail in UNAVAILABLE else None
+    if available is not False and not _has_order_button(soup):
+        hints.insert(0, "notify me (no order button on the product page)")
     canonical = soup.find("link", rel="canonical")
     page_url = urljoin(url, canonical["href"]) if canonical and canonical.get("href") else url
     return {
@@ -288,6 +294,21 @@ def parse_product_page(html: str, url: str) -> dict | None:
         "tags": "",
         "text": BeautifulSoup(desc, "html.parser").get_text(" ", strip=True)[:800] if isinstance(desc, str) else "",
     }
+
+
+def _has_order_button(soup) -> bool:
+    for el in soup.find_all(["button", "input", "a"]):
+        if el.has_attr("disabled") or "disabled" in " ".join(el.get("class", [])).lower():
+            continue
+        txt = el.get_text(" ", strip=True) if el.name != "input" else el.get("value", "")
+        attrs = " ".join([el.get("name", ""), el.get("id", ""), " ".join(el.get("class", [])),
+                          el.get("data-action", ""), el.get("href", "") if el.name != "a" else ""])
+        if (txt and len(txt) < 60 and CART_TEXT.search(txt)) or CART_ATTR.search(attrs):
+            return True
+    for form in soup.find_all("form"):
+        if CART_ATTR.search(form.get("action", "") + " " + " ".join(form.get("class", []))):
+            return True
+    return False
 
 
 # --------------------------------------------------------------- adapter

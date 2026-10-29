@@ -25,6 +25,13 @@ function run_setup(PDO $pdo): array
         $done[] = 'upgraded shops table';
     }
 
+    $pcols = $pdo->query('SHOW COLUMNS FROM products')->fetchAll(PDO::FETCH_COLUMN);
+    if (!in_array('hidden', $pcols, true)) {
+        $pdo->exec('ALTER TABLE products MODIFY status VARCHAR(20) NOT NULL, ADD hidden TINYINT(1) NOT NULL DEFAULT 0');
+        $pdo->exec('ALTER TABLE price_history MODIFY status VARCHAR(20) NOT NULL');
+        $done[] = 'added not-orderable status and hide flag';
+    }
+
     if ((int)$pdo->query('SELECT COUNT(*) FROM shops')->fetchColumn() === 0) {
         $file = __DIR__ . '/../shops-de-nl.txt';
         [$added] = shop_import($pdo, is_file($file) ? (string)file_get_contents($file) : '');

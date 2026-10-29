@@ -51,7 +51,18 @@ PREORDER = re.compile(
     r"pre-?\s?order|preorder|vorbestell|vorverkauf|vorbesteller|pre-?sale|presale|"
     r"voorverkoop|voorbestel|pre-?release|erscheint|erscheinungs|release\s*date|"
     r"verf(ü|ue)gbar\s*ab|lieferbar\s*ab|beschikbaar\s*vanaf|leverbaar\s*vanaf|"
-    r"verschijnt|coming\s*soon|demn(ä|ae)chst",
+    r"verschijnt",
+    re.I,
+)
+# Listed, but cannot be ordered (yet): announcement pages, "notify me" buttons etc.
+NOT_ORDERABLE = re.compile(
+    r"coming\s*soon|demn(ä|ae)chst|bald\s*(verf(ü|ue)gbar|erh(ä|ae)ltlich)|binnenkort|"
+    r"benachrichtig|notify\s*me|e-?mail\s*(me|bei|wenn)|mail\s*me\s*when|"
+    r"houd\s*me\s*op\s*de\s*hoogte|laat\s*het\s*me\s*weten|op\s*de\s*hoogte|"
+    r"nicht\s*(mehr\s*)?bestellbar|niet\s*(meer\s*)?bestelbaar|not\s*(yet\s*)?(available\s*for\s*)?order|"
+    r"noch\s*nicht\s*(bestellbar|verf(ü|ue)gbar|vorbestellbar)|nog\s*niet\s*(bestelbaar|beschikbaar)|"
+    r"preis\s*(folgt|auf\s*anfrage)|prijs\s*volgt|price\s*tba|tba\b|"
+    r"vorbestellung\s*(noch\s*nicht|bald|ab\s*\d)|ank(ü|ue)ndigung|announcement",
     re.I,
 )
 SOLD_OUT = re.compile(
@@ -138,16 +149,16 @@ def product_type(title: str) -> str:
 
 
 def status(available: bool | None, text: str, title: str) -> str:
-    """available: what the shop's API says (None = unknown).
-    Returns 'preorder', 'available' or 'sold_out'."""
-    pre = bool(PREORDER.search(title) or PREORDER.search(text))
-    if available is None:
-        if SOLD_OUT.search(text):
-            return "sold_out"
-        return "preorder" if pre else "available"
-    if not available:
+    """available: what the shop says about orderability (None = unknown).
+    Returns 'preorder', 'available', 'sold_out' or 'not_orderable'."""
+    if available is False or (available is None and SOLD_OUT.search(text)):
         return "sold_out"
-    return "preorder" if pre else "available"
+    if NOT_ORDERABLE.search(text) or NOT_ORDERABLE.search(title):
+        return "not_orderable"
+    if available is None:
+        # nothing says it can be bought: only trust an explicit preorder signal
+        return "preorder" if (PREORDER.search(title) or PREORDER.search(text)) else "not_orderable"
+    return "preorder" if (PREORDER.search(title) or PREORDER.search(text)) else "available"
 
 
 def classify(item: dict, assume_english: bool = False, terms=()) -> dict | None:

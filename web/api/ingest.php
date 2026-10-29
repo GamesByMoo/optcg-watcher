@@ -21,7 +21,7 @@ $toLocal = static function ($iso) use ($now): string {
     return $t ? date('Y-m-d H:i:s', $t) : $now;
 };
 $allowedTypes = ['display', 'case', 'special'];
-$allowedStatus = ['preorder', 'available', 'sold_out'];
+$allowedStatus = ['preorder', 'available', 'sold_out', 'not_orderable'];
 
 $sel = $pdo->prepare('SELECT id, price, status FROM products WHERE shop_id = ? AND external_id = ?');
 $ins = $pdo->prepare('INSERT INTO products (shop_id, external_id, title, url, image, set_code, product_type, status, price, currency, first_seen, last_seen, active)
@@ -72,7 +72,7 @@ foreach ($payload['shops'] as $res) {
             continue;
         }
         $type = in_array($it['product_type'] ?? '', $allowedTypes, true) ? $it['product_type'] : 'special';
-        $status = in_array($it['status'] ?? '', $allowedStatus, true) ? $it['status'] : 'available';
+        $status = in_array($it['status'] ?? '', $allowedStatus, true) ? $it['status'] : 'not_orderable';
         $price = isset($it['price']) && is_numeric($it['price']) ? round((float)$it['price'], 2) : null;
         $image = isset($it['image']) && preg_match('#^(https?:)?//#i', (string)$it['image']) ? mb_substr((string)$it['image'], 0, 1000) : null;
         if ($image !== null && strpos($image, '//') === 0) {
@@ -96,7 +96,7 @@ foreach ($payload['shops'] as $res) {
                 $hist->execute([$pid, $price, $status, $now]);
             }
             // back in stock / reopened for preorder -> allow a fresh alert
-            if ($row['status'] === 'sold_out' && $status !== 'sold_out') {
+            if (in_array($row['status'], ['sold_out', 'not_orderable'], true) && in_array($status, ['preorder', 'available'], true)) {
                 $resetAlert->execute([$pid]);
             }
         }
@@ -128,7 +128,7 @@ $alerts = [];
 if ($rules) {
     $products = $pdo->query("SELECT p.*, s.name AS shop_name, s.country
                              FROM products p JOIN shops s ON s.id = p.shop_id
-                             WHERE p.active = 1 AND p.price IS NOT NULL AND p.status IN ('preorder','available')")->fetchAll();
+                             WHERE p.active = 1 AND p.hidden = 0 AND p.price IS NOT NULL AND p.status IN ('preorder','available')")->fetchAll();
     foreach ($products as $p) {
         $best = null;
         foreach ($rules as $r) {

@@ -92,6 +92,28 @@ def _term_core(term: str) -> str:
     return re.sub(r"(?i)^op\s*-?\s*(?=[a-z])", "", term.strip())
 
 
+# A range of set codes in one term, e.g. "ST37-ST50", "ST37..50", "ST-37 bis ST-50".
+CODE_RANGE = re.compile(
+    r"^\s*(OP|EB|PRB|PEB|ST|DP|LD)\s*-?\s*(\d{1,2})\s*(?:\.\.|–|—|-|bis|to)\s*(?:\1\s*-?\s*)?(\d{1,2})\s*$", re.I)
+
+
+def range_codes(term: str) -> list[str] | None:
+    """'ST37-ST50' -> ['ST-37', ..., 'ST-50']; None if the term is not a range."""
+    m = CODE_RANGE.match(term or "")
+    if not m:
+        return None
+    a, b = sorted((int(m.group(2)), int(m.group(3))))
+    return [f"{m.group(1).upper()}-{n:02d}" for n in range(a, min(b, a + 39) + 1)]
+
+
+def search_queries(terms) -> list[str]:
+    """Everything to type into shop search boxes; ranges are searched code by code."""
+    out = []
+    for t in terms or []:
+        out += range_codes(t) or [search_query(t)]
+    return list(dict.fromkeys(out))
+
+
 def search_query(term: str) -> str:
     """What to type into a shop's search box for a term:
     set codes in the usual 'EB-05' form, other words prefixed with 'one piece'."""
@@ -109,6 +131,11 @@ def term_matches(title: str, terms) -> str | None:
     codes = {f"{m.group(1).upper()}-{int(m.group(2)):02d}" for m in SET_CODE.finditer(title or "")}
     ct = _compact(title)
     for term in terms:
+        rc = range_codes(term)
+        if rc:
+            if codes & set(rc):
+                return term
+            continue
         core_term = _term_core(term).strip()
         if SET_CODE.fullmatch(core_term):  # codes only match as codes: OP-2 never matches OP-20
             if set_code(core_term) in codes:

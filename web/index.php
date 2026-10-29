@@ -35,7 +35,10 @@ if ($country) { $where[] = 's.country = ?'; $args[] = $country; }
 if ($type) { $where[] = 'p.product_type = ?'; $args[] = $type; }
 if ($q !== '') {
     // 'EB05' finds 'EB-05' / 'EB 05' titles too
-    if ($code = canonical_code($q)) {
+    if ($rc = range_codes($q)) {
+        $where[] = 'p.set_code IN (' . implode(',', array_fill(0, count($rc), '?')) . ')';
+        array_push($args, ...$rc);
+    } elseif ($code = canonical_code($q)) {
         $where[] = 'p.set_code = ?';
         $args[] = $code;
     } else {
@@ -109,7 +112,7 @@ page_header($titles[$view], $view === 'hidden' ? 'all' : $view);
 <nav class="chips" aria-label="Search terms">
   <?php foreach ($terms as $t): ?>
     <a href="index.php?<?= h(http_build_query(['view' => $view, 'q' => $t, 'country' => $country, 'type' => $type, 'sort' => $sort])) ?>"
-       class="<?= strcasecmp($q, $t) === 0 ? 'on' : '' ?>"><?= h($t) ?></a>
+       class="<?= strcasecmp($q, $t) === 0 ? 'on' : '' ?>" title="<?= h($t) ?>"><?= h(term_label($t)) ?></a>
   <?php endforeach; ?>
   <?php if ($q !== ''): ?><a href="index.php?view=<?= h($view) ?>" class="clear">× clear</a><?php endif; ?>
 </nav>
@@ -149,7 +152,7 @@ page_header($titles[$view], $view === 'hidden' ? 'all' : $view);
       </div>
       <div class="tags">
         <span class="badge <?= h($r['status']) ?>"><?= h($labels[$r['status']] ?? $r['status']) ?></span>
-        <?php if ($term): ?><span class="badge term">★ <?= h($term) ?></span><?php endif; ?>
+        <?php if ($term): ?><span class="badge term">★ <?= h(range_codes($term) && $r['set_code'] ? $r['set_code'] : $term) ?></span><?php endif; ?>
         <?php if ($isCheapest): ?><span class="badge best">Cheapest</span><?php endif; ?>
         <?php if ($rule): ?><span class="badge alarm">≤ <?= h(eur($rule['max_price'])) ?> · <?= h($rule['label']) ?></span><?php endif; ?>
       </div>

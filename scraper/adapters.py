@@ -19,7 +19,7 @@ from urllib.parse import urljoin, quote_plus
 import requests
 from bs4 import BeautifulSoup
 
-from classify import search_query, term_matches
+from classify import search_queries, term_matches
 
 UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -161,7 +161,7 @@ def woocommerce(shop: dict) -> list[dict]:
     """
     cfg = shop.get("config") or {}
     base = shop["base_url"].rstrip("/")
-    searches = [cfg.get("search", "one piece")] + [search_query(t) for t in (shop.get("_terms") or [])]
+    searches = [cfg.get("search", "one piece")] + search_queries(shop.get("_terms"))
     items, seen = [], set()
     for search in dict.fromkeys(searches):
       params = {"per_page": 100, "search": search}

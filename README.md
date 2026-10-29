@@ -138,6 +138,9 @@ only as codes, so `OP-2` never matches `OP-20`. `OP-PEB` matches `PEB-01` titles
 matching is used by price rules ("Title contains") and the search box. Each term adds one search
 per shop and run, so keep the list to what you actually want (max. 60).
 
+**Ranges:** a line like `ST37-ST50` (also `ST37..50` or `ST-37 bis ST-50`) searches every code in it
+and shows up as a single filter button (`ST 37–50`).
+
 Try terms without changing the web app: `python scraper/main.py --url https://shop.de --terms "OP-20,EB05"`.
 
 ## Tuning what counts as English / display / preorder

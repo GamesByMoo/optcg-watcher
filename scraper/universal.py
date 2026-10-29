@@ -24,7 +24,7 @@ from urllib.parse import urljoin, urlparse, quote_plus
 from bs4 import BeautifulSoup
 
 from adapters import _get, _try_get, parse_price, PAGE_DELAY, shopify, woocommerce
-from classify import ONE_PIECE, ACCESSORY, OTHER_LANG, DISPLAY, CASE, SPECIAL, SET_CODE, search_query, term_matches
+from classify import ONE_PIECE, ACCESSORY, OTHER_LANG, DISPLAY, CASE, SPECIAL, SET_CODE, search_queries, term_matches
 
 DEFAULT_QUERIES = ["one piece display", "one piece booster box", "one piece english", "one piece premium"]
 
@@ -322,7 +322,7 @@ def jsonld(shop: dict) -> list[dict]:
             raise RuntimeError("No search page or One Piece category found for this shop.")
 
     terms = shop.get("_terms") or []
-    queries = list(dict.fromkeys(list(cfg.get("queries", DEFAULT_QUERIES)) + [search_query(t) for t in terms]))
+    queries = list(dict.fromkeys(list(cfg.get("queries", DEFAULT_QUERIES)) + search_queries(terms)))
     pages = []
     if cfg.get("search_url"):
         pages += [cfg["search_url"].replace("{q}", quote_plus(q)) for q in queries]

@@ -188,7 +188,8 @@ foreach ($errors as $e): ?><p class="flash err"><?= h($e) ?></p><?php endforeach
   <h2>Search terms</h2>
   <p class="muted">Sets and products to look for specifically – one per line. Each term is searched in every shop
     (in addition to the general One Piece display search), matching products are always kept, and they are marked
-    with ★ in the lists. Set codes are matched in any spelling: <code>EB05</code> = <code>EB-05</code> = <code>EB 5</code>.</p>
+    with ★ in the lists. Set codes are matched in any spelling: <code>EB05</code> = <code>EB-05</code> = <code>EB 5</code>.
+    A range like <code>ST37-ST50</code> searches every code in it and appears as one filter button.</p>
   <form method="post" class="terms-form">
     <?= csrf_field() ?><input type="hidden" name="action" value="terms">
     <textarea name="search_terms" rows="8" spellcheck="false" placeholder="OP-20&#10;EB05&#10;Anniversary"><?= h(implode("\n", search_terms())) ?></textarea>

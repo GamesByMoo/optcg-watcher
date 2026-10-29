@@ -151,7 +151,7 @@ function json_out($data, int $code = 200): void
 }
 
 // ------------------------------------------------------------ search terms
-const DEFAULT_SEARCH_TERMS = "EB05\nEB06\nEB07\nEB08\nOP-19\nOP-20\nOP-21\nOP-22\nOP-23\nOP-PEB\nOP-PEB01";
+const DEFAULT_SEARCH_TERMS = "EB05\nEB06\nEB07\nEB08\nOP-19\nOP-20\nOP-21\nOP-22\nOP-23\nOP-PEB\nOP-PEB01\nST37-ST50";
 const SET_CODE_RE = '(OP|EB|PRB|PEB|ST|DP|LD)\s*-?\s*(\d{1,2})';
 
 /** The user's search terms (Settings -> Search terms), one per entry. */
@@ -179,11 +179,34 @@ function canonical_code(string $t): ?string
         ? strtoupper($m[1]) . '-' . str_pad((string)(int)$m[2], 2, '0', STR_PAD_LEFT) : null;
 }
 
+/** 'ST37-ST50' / 'ST37..50' -> ['ST-37', ..., 'ST-50']; null if the term is not a range. */
+function range_codes(string $t): ?array
+{
+    if (!preg_match('/^\s*' . SET_CODE_RE . '\s*(?:\.\.|–|—|-|bis|to)\s*(?:\1\s*-?\s*)?(\d{1,2})\s*$/iu', $t, $m)) return null;
+    [$a, $b] = [min((int)$m[2], (int)$m[3]), max((int)$m[2], (int)$m[3])];
+    $codes = [];
+    for ($n = $a; $n <= min($b, $a + 39); $n++) $codes[] = strtoupper($m[1]) . '-' . str_pad((string)$n, 2, '0', STR_PAD_LEFT);
+    return $codes;
+}
+
+/** Short label for a term chip: 'ST37-ST50' -> 'ST 37–50'. */
+function term_label(string $t): string
+{
+    $rc = range_codes($t);
+    return $rc ? explode('-', $rc[0])[0] . ' ' . substr($rc[0], -2) . '–' . substr(end($rc), -2) : $t;
+}
+
 /** Does a product (title + set code) match a term? 'EB05' matches 'EB-05' and 'EB 5'. */
 function text_matches(string $title, ?string $setCode, string $term): bool
 {
     $term = trim($term);
     if ($term === '') return true;
+    if ($rc = range_codes($term)) {
+        foreach ($rc as $code) {
+            if (text_matches($title, $setCode, $code)) return true;
+        }
+        return false;
+    }
     if ($code = canonical_code($term)) {
         if ($setCode !== null && strcasecmp($setCode, $code) === 0) return true;
         preg_match_all('/\b' . SET_CODE_RE . '\b/i', $title, $mm, PREG_SET_ORDER);

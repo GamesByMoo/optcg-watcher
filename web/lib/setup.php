@@ -32,6 +32,17 @@ function run_setup(PDO $pdo): array
         $done[] = 'added not-orderable status and hide flag';
     }
 
+    // one-time: add the starter deck range to an already saved search-term list
+    $st = $pdo->query("SELECT v FROM settings WHERE k = 'search_terms'")->fetchColumn();
+    $flag = $pdo->query("SELECT v FROM settings WHERE k = 'migr_st_range'")->fetchColumn();
+    if ($flag === false) {
+        if ($st !== false && $st !== null && stripos((string)$st, 'ST37') === false) {
+            $pdo->prepare("UPDATE settings SET v = ? WHERE k = 'search_terms'")->execute([rtrim((string)$st) . "\nST37-ST50"]);
+            $done[] = 'added ST37-ST50 to search terms';
+        }
+        $pdo->exec("INSERT INTO settings (k, v) VALUES ('migr_st_range', '1')");
+    }
+
     if ((int)$pdo->query('SELECT COUNT(*) FROM shops')->fetchColumn() === 0) {
         $file = __DIR__ . '/../shops-de-nl.txt';
         [$added] = shop_import($pdo, is_file($file) ? (string)file_get_contents($file) : '');

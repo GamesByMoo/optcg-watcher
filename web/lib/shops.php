@@ -21,6 +21,12 @@ function shop_normalize_url(string $url): ?string
     return strtolower($p['scheme']) . '://' . strtolower($p['host']) . (isset($p['port']) ? ':' . $p['port'] : '') . $path;
 }
 
+/** Comparable key for a shop URL: 'https://www.Shop.de/' -> 'shop.de' */
+function shop_key(string $url): string
+{
+    return preg_replace('#^https?://(www\.)?#', '', strtolower(rtrim($url, '/')));
+}
+
 function shop_name_from_url(string $url): string
 {
     $host = preg_replace('/^www\./', '', (string)parse_url($url, PHP_URL_HOST));
@@ -31,6 +37,7 @@ function shop_name_from_url(string $url): string
 function shop_country_from_url(string $url): string
 {
     $host = (string)parse_url($url, PHP_URL_HOST);
+    if (preg_match('/\.at$/', $host)) return 'AT';
     return preg_match('/\.(nl|be)$/', $host) ? 'NL' : 'DE';
 }
 
@@ -59,7 +66,7 @@ function shop_import(PDO $pdo, string $text): array
         foreach ($parts as $part) {
             if ($url === null && preg_match('#^(https?://)?[a-z0-9-]+(\.[a-z0-9-]+)+(:\d+)?(/\S*)?$#i', $part)) {
                 $url = shop_normalize_url($part);
-            } elseif (preg_match('/^(DE|NL)$/i', $part)) {
+            } elseif (preg_match('/^(DE|NL|AT)$/i', $part)) {
                 $country = strtoupper($part);
             } elseif ($name === null && $part !== '') {
                 $name = mb_substr($part, 0, 100);

@@ -150,6 +150,19 @@ function json_out($data, int $code = 200): void
     exit;
 }
 
+// ------------------------------------------------------------ countries
+const COUNTRIES = ['DE' => 'Germany', 'NL' => 'Netherlands / Belgium', 'AT' => 'Austria'];
+
+/** <option> tags for a country <select>; $anyLabel adds a first "all countries" option. */
+function country_options(string $selected, ?string $anyLabel = null, string $anyValue = ''): string
+{
+    $o = $anyLabel !== null ? '<option value="' . h($anyValue) . '">' . h($anyLabel) . '</option>' : '';
+    foreach (COUNTRIES as $k => $l) {
+        $o .= '<option value="' . $k . '"' . ($selected === $k ? ' selected' : '') . '>' . h($l) . '</option>';
+    }
+    return $o;
+}
+
 // ------------------------------------------------------------ search terms
 const DEFAULT_SEARCH_TERMS = "EB05\nEB06\nEB07\nEB08\nOP-19\nOP-20\nOP-21\nOP-22\nOP-23\nOP-PEB\nOP-PEB01\nST37-ST50";
 const SET_CODE_RE = '(OP|EB|PRB|PEB|ST|DP|LD)\s*-?\s*(\d{1,2})';

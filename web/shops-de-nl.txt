@@ -1,4 +1,4 @@
-# Starting list of shops selling English One Piece TCG (DE/NL, Belgian shops filed as NL).
+# Starting list of shops selling English One Piece TCG (DE, NL, AT – Belgian shops filed as NL).
 # Format: Name | URL | Country  - lines starting with # are ignored. Researched 2026-10-29.
 1-Dream | https://1-dream.de | DE
 Aburaya | https://www.aburaya.de | DE
@@ -117,3 +117,63 @@ TCGTriarch | https://www.tcgtriarch.com | NL
 TF-Robots | https://www.tf-robots.nl | NL
 Zaptoys | https://zaptoys.nl | NL
 ZyCards | https://zycards.nl | NL
+# Added 2026-10-29 (second research round)
+Butti Cards | https://www.butticards.at | AT
+Miki's Card Shop | https://www.mikiscardshop.at | AT
+Sammelmania | https://sammelmania.at | AT
+gameware.at | https://shop.gameware.at | AT
+SpielRaum | https://www.spielraum.co.at | AT
+Grubi & Co | https://www.grubi-co.at | AT
+Comic-Galerie / Card-World Wien | https://shop.comic-galerie.at | AT
+Cardcorner | https://cardcorner.at | AT
+Merchversum | https://www.merchversum.at | AT
+Pokechest | https://pokechest.at | AT
+Lairos Shop | https://lairos.shop | AT
+Dilaras | https://dilaras.at | AT
+Here in Neverland | https://here-in-neverland.at | AT
+House of Cards | https://www.houseofcards.at | AT
+S-Games | https://s-games.at | AT
+Prime Protector | https://primeprotector.at | AT
+Coso5 | https://www.coso5.at | AT
+BB-Spiele | https://www.bb-spiele.de | DE
+Cardinates | https://cardinates.de | DE
+Cards R Fun | https://cardsrfun.de | DE
+Celestial GameShop | https://www.celestial-gameshop.de | DE
+Der Sockelshop | https://www.dersockelshop.de | DE
+Elbenwald | https://www.elbenwald.de | DE
+Hiveworld | https://www.hiveworld.de | DE
+Jungle World TCG | https://jungle-world-tcg.de | DE
+KARDS Greifswald | https://kardsgreifswald.de | DE
+Kroko-Games | https://www.kroko-games.com | DE
+MaBasso | https://mabasso.com | DE
+Mighty-Cards | https://www.mighty-cards.de | DE
+PokeViert | https://www.pokeviert.shop | DE
+Pokitrio | https://www.pokitrio.de | DE
+PrimeD TCG | https://primedtcg.de | DE
+Spielewelt | https://spielewelt.de | DE
+Spielwarenparadies24 | https://spielwarenparadies24.de | DE
+Stickerpoint | https://www.stickerpoint.de | DE
+Superelf-Cards | https://superelf-cards.de | DE
+Takumi Cards | https://takumicards.de | DE
+TCG Buddies | https://www.tcg-buddies.de | DE
+TCG Dojo | https://tcgdojo.de | DE
+TcG Love | https://tcg-love.de | DE
+Tenkaichi | https://tenkaichi.de | DE
+Tradingcard Temple | https://tradingcard-temple.de | DE
+Ultramegacards | https://ultramegacards.de | DE
+White Rabbit CGS | https://www.whiterabbit-cgs.de | DE
+YomiruCards | https://www.yomirucards.com | DE
+Amsterdam Toys | https://amsterdam-toys.com | NL
+Cardstore.nl | https://cardstore.nl | NL
+Collector Store | https://www.collectorstore.nl | NL
+Ilan TCG Belgium | https://ilantcgbelgium.com | NL
+Kai of Cards | https://kaiofcards.com | NL
+MegaWereld | https://www.megawereld.nl | NL
+Nedgame | https://www.nedgame.nl | NL
+Outpost Brussels | https://outpostbrussels.be | NL
+playingcardshop.eu | https://www.playingcardshop.eu | NL
+Sammy's Gameshop | https://sammysgameshop.nl | NL
+Smartoys | https://www.smartoys.be | NL
+StartSpeler | https://startspeler.com | NL
+The Bulba Vault | https://thebulbavault.com | NL
+Trading Card Game Store | https://tradingcardgamestore.com | NL

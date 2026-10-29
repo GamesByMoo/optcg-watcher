@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $view = in_array($_GET['view'] ?? '', ['preorder', 'available', 'all', 'hidden'], true) ? $_GET['view'] : 'preorder';
-$country = in_array($_GET['country'] ?? '', ['DE', 'NL'], true) ? $_GET['country'] : '';
+$country = array_key_exists($_GET['country'] ?? '', COUNTRIES) ? $_GET['country'] : '';
 $type = in_array($_GET['type'] ?? '', ['display', 'case', 'special'], true) ? $_GET['type'] : '';
 $q = trim((string)($_GET['q'] ?? ''));
 $sort = in_array($_GET['sort'] ?? '', ['price', 'set', 'new'], true) ? $_GET['sort'] : 'set';
@@ -91,9 +91,7 @@ page_header($titles[$view], $view === 'hidden' ? 'all' : $view);
 <form class="filters" method="get">
   <input type="hidden" name="view" value="<?= h($view) ?>">
   <input type="search" name="q" value="<?= h($q) ?>" placeholder="Search, e.g. OP-14">
-  <select name="country"><option value="">DE + NL</option>
-    <option value="DE" <?= $country === 'DE' ? 'selected' : '' ?>>Germany</option>
-    <option value="NL" <?= $country === 'NL' ? 'selected' : '' ?>>Netherlands</option></select>
+  <select name="country"><?= country_options($country, 'All countries') ?></select>
   <select name="type"><option value="">All types</option>
     <option value="display" <?= $type === 'display' ? 'selected' : '' ?>>Displays</option>
     <option value="case" <?= $type === 'case' ? 'selected' : '' ?>>Cases</option>

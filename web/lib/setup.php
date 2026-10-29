@@ -43,10 +43,28 @@ function run_setup(PDO $pdo): array
         $pdo->exec("INSERT INTO settings (k, v) VALUES ('migr_st_range', '1')");
     }
 
-    if ((int)$pdo->query('SELECT COUNT(*) FROM shops')->fetchColumn() === 0) {
-        $file = __DIR__ . '/../shops-de-nl.txt';
-        [$added] = shop_import($pdo, is_file($file) ? (string)file_get_contents($file) : '');
-        $done[] = "$added shops added from the starting list";
+    // Starting shop list: new lines in shops-de-nl.txt are imported on the next deploy.
+    // Remembered per domain, so shops you delete in the web app don't come back.
+    $file = __DIR__ . '/../shops-de-nl.txt';
+    if (is_file($file)) {
+        $seenRaw = $pdo->query("SELECT v FROM settings WHERE k = 'seed_seen'")->fetchColumn();
+        $seen = $seenRaw ? (array)json_decode((string)$seenRaw, true) : [];
+        if ($seenRaw === false) { // first run of this mechanism: everything already in the DB counts as seen
+            foreach ($pdo->query('SELECT base_url FROM shops')->fetchAll(PDO::FETCH_COLUMN) as $u) $seen[shop_key((string)$u)] = 1;
+        }
+        $new = [];
+        foreach (preg_split('/\R/', (string)file_get_contents($file)) as $line) {
+            $line = trim($line);
+            if ($line === '' || $line[0] === '#' || !preg_match('#(https?://)?([a-z0-9-]+\.)+[a-z]{2,}\S*#i', $line, $m)) continue;
+            $key = shop_key(shop_normalize_url($m[0]) ?? $m[0]);
+            if (!isset($seen[$key])) { $new[] = $line; $seen[$key] = 1; }
+        }
+        if ($new) {
+            [$added] = shop_import($pdo, implode("\n", $new));
+            $done[] = "$added new shop(s) added from the starting list";
+        }
+        $pdo->prepare("INSERT INTO settings (k, v) VALUES ('seed_seen', ?) ON DUPLICATE KEY UPDATE v = VALUES(v)")
+            ->execute([json_encode($seen)]);
     }
     if ((int)$pdo->query('SELECT COUNT(*) FROM alert_rules')->fetchColumn() === 0) {
         $pdo->prepare('INSERT INTO alert_rules (label, match_text, product_type, country, statuses, max_price) VALUES (?,?,?,?,?,?)')

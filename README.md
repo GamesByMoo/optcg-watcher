@@ -1,6 +1,6 @@
 # OPTCG Preorder Watcher
 
-Watches German and Dutch web shops (a starting list of DE/NL TCG shops, plus any shop you add by
+Watches German, Dutch/Belgian and Austrian web shops (a starting list of DE/NL/AT TCG shops, plus any shop you add by
 pasting its URL) for **English One Piece TCG displays, cases and special
 products**, lists what is up for preorder and what is buyable right now, keeps a price history,
 and e-mails you when a preorder drops below your limit.
@@ -107,7 +107,10 @@ next check the scraper **detects by itself** how to read each shop and remembers
    a shop has no usable search.
 
 Lines can also carry a name and country: `Kaartenwinkel | https://kaartenwinkel.nl | NL`
-(otherwise the name comes from the domain and `.nl`/`.be` → NL, everything else → DE).
+(otherwise the name comes from the domain and `.nl`/`.be` → NL, `.at` → AT, everything else → DE).
+
+New lines added to `web/shops-de-nl.txt` are imported automatically on the next deploy; shops you
+deleted in the web app are not brought back.
 
 If a shop fails, *Settings → Shops → Problems* shows the reason. Options: **re-detect**, edit its
 config (e.g. add `"listing_urls": ["https://shop.de/one-piece-englisch"]` if its search is odd), or

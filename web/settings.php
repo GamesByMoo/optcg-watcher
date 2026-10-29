@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $label = trim((string)($_POST['label'] ?? ''));
             $max = str_replace(',', '.', (string)($_POST['max_price'] ?? ''));
             $ptype = in_array($_POST['product_type'] ?? '', ['any', 'display', 'case', 'special'], true) ? $_POST['product_type'] : 'any';
-            $country = in_array($_POST['country'] ?? '', ['any', 'DE', 'NL'], true) ? $_POST['country'] : 'any';
+            $country = ($_POST['country'] ?? '') === 'any' || array_key_exists($_POST['country'] ?? '', COUNTRIES) ? $_POST['country'] : 'any';
             $statuses = in_array($_POST['statuses'] ?? '', ['preorder', 'available', 'both'], true) ? $_POST['statuses'] : 'preorder';
             $match = mb_substr(trim((string)($_POST['match_text'] ?? '')), 0, 100);
             if ($label === '' || !is_numeric($max) || (float)$max <= 0) {
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $url = shop_normalize_url((string)($_POST['base_url'] ?? '')) ?? '';
             $name = trim((string)($_POST['name'] ?? '')) ?: ($url ? shop_name_from_url($url) : '');
             $platform = array_key_exists($_POST['platform'] ?? '', SHOP_PLATFORMS) ? $_POST['platform'] : 'auto';
-            $country = in_array($_POST['country'] ?? '', ['DE', 'NL'], true) ? $_POST['country'] : ($url ? shop_country_from_url($url) : 'DE');
+            $country = array_key_exists($_POST['country'] ?? '', COUNTRIES) ? $_POST['country'] : ($url ? shop_country_from_url($url) : 'DE');
             $cfgRaw = trim((string)($_POST['config'] ?? '')) ?: '{}';
             $cfg = json_decode($cfgRaw, true);
             if ($url === '') $errors[] = 'Please enter a valid shop URL.';
@@ -228,8 +228,7 @@ foreach ($errors as $e): ?><p class="flash err"><?= h($e) ?></p><?php endforeach
       <?php foreach (['any' => 'Any', 'display' => 'Display', 'case' => 'Case', 'special' => 'Special'] as $k => $l): ?>
         <option value="<?= $k ?>" <?= $sel($editRule['product_type'], $k) ?>><?= $l ?></option><?php endforeach; ?></select></label>
     <label>Country <select name="country">
-      <?php foreach (['any' => 'DE + NL', 'DE' => 'Germany', 'NL' => 'Netherlands'] as $k => $l): ?>
-        <option value="<?= $k ?>" <?= $sel($editRule['country'], $k) ?>><?= $l ?></option><?php endforeach; ?></select></label>
+      <?= country_options((string)$editRule['country'], 'All countries', 'any') ?></select></label>
     <label>Status <select name="statuses">
       <?php foreach (['preorder' => 'Preorder only', 'available' => 'In stock only', 'both' => 'Both'] as $k => $l): ?>
         <option value="<?= $k ?>" <?= $sel($editRule['statuses'], $k) ?>><?= $l ?></option><?php endforeach; ?></select></label>
@@ -254,7 +253,7 @@ foreach ($errors as $e): ?><p class="flash err"><?= h($e) ?></p><?php endforeach
 
   <form method="post" class="bulk">
     <?= csrf_field() ?><input type="hidden" name="action" value="shop_bulk">
-    <label>Add shops – one per line, just the URL is enough (format: <code>Name | URL | DE/NL</code>, all parts optional except the URL)
+    <label>Add shops – one per line, just the URL is enough (format: <code>Name | URL | DE/NL/AT</code>, all parts optional except the URL)
       <textarea name="lines" rows="3" spellcheck="false" placeholder="https://www.some-tcg-shop.de&#10;Kaartenwinkel | https://kaartenwinkel.nl | NL"></textarea></label>
     <button>Add shops</button>
     <span class="muted small">The platform is detected automatically on the next check.</span>
@@ -292,8 +291,7 @@ foreach ($errors as $e): ?><p class="flash err"><?= h($e) ?></p><?php endforeach
     <label>Shop URL <input name="base_url" value="<?= h($editShop['base_url']) ?>" required placeholder="https://shop.example.de"></label>
     <label>Name <input name="name" value="<?= h($editShop['name']) ?>" placeholder="from the URL if empty"></label>
     <label>Country <select name="country">
-      <option value="DE" <?= $sel($editShop['country'], 'DE') ?>>Germany</option>
-      <option value="NL" <?= $sel($editShop['country'], 'NL') ?>>Netherlands</option></select></label>
+<?= country_options((string)$editShop['country']) ?></select></label>
     <label>Platform <select name="platform">
       <?php foreach (SHOP_PLATFORMS as $k => $l): ?>
         <option value="<?= $k ?>" <?= $sel($editShop['platform'], $k) ?>><?= h($l) ?></option><?php endforeach; ?></select></label>

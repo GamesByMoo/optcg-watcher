@@ -154,9 +154,9 @@ adjust a pattern there and push – the next run uses it.
 ## Good to know
 - **Timing:** GitHub runs scheduled workflows on a best-effort basis; runs are often a few minutes
   late. The web app warns you if no check arrived for 3 hours.
-- **Run time:** shops are checked 15 at a time (`OPT_WORKERS`), one request per second per shop.
+- **Run time:** shops are checked 25 at a time (`OPT_WORKERS`), one request per second per shop.
   A run stops starting new shops after 30 minutes (`OPT_TIME_BUDGET`) so it never overlaps the next
-  one; skipped shops are noted in *Recent checks*. Add `OPT_WORKERS: "25"` to the workflow's `env:`
+  one; skipped shops are noted in *Recent checks*. Add `OPT_WORKERS: "35"` to the workflow's `env:`
   if that happens.
 - **Inactivity:** GitHub disables schedules in repositories without activity for 60 days. If that
   happens, re-enable the workflow in the *Actions* tab.

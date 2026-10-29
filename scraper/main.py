@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import adapters  # noqa: E402
 from classify import classify  # noqa: E402
 
-WORKERS = int(os.environ.get("OPT_WORKERS", "15"))       # shops checked at the same time
+WORKERS = int(os.environ.get("OPT_WORKERS", "25"))       # shops checked at the same time
 TIME_BUDGET = int(os.environ.get("OPT_TIME_BUDGET", "1800"))  # seconds; stay well below 45 min
 
 

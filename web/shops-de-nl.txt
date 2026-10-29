@@ -1,0 +1,119 @@
+# Starting list of shops selling English One Piece TCG (DE/NL, Belgian shops filed as NL).
+# Format: Name | URL | Country  - lines starting with # are ignored. Researched 2026-10-29.
+1-Dream | https://1-dream.de | DE
+Aburaya | https://www.aburaya.de | DE
+Adventurecardz | https://adventurecardz.de | DE
+Akagami Collectibles | https://akagami-collectibles.de | DE
+AlphaHype | https://alphahype.de | DE
+Animany | https://animany.de | DE
+Battle Bear KL | https://battle-bear-kl.de | DE
+Battle Bear SB | https://www.battle-bear-sb.de | DE
+Break the Case | https://www.breakthecase.de | DE
+Brickznmore | https://brickznmore.myshopify.com | DE
+BulkParadise TCG | https://bulkparadise-tcg.de | DE
+Card Catcher | https://www.cardcatcher.de | DE
+Card Collector | https://card-collector.net | DE
+Card Knights | https://www.card-knights.de | DE
+Card Legends | https://cardlegends.de | DE
+Card-Corner | https://www.card-corner.de | DE
+CardBuddys | https://www.cardbuddys.de | DE
+cardcosmos | https://cardcosmos.de | DE
+CardGames24 | https://cardgames24.de | DE
+Cardlantis | https://cardlantis.de | DE
+Cardport Collectors' Shop | https://www.cardport.de | DE
+CardsPlace | https://www.cardsplace.de | DE
+Collect-it | https://www.collect-it.de | DE
+Comicplanet | https://www.comicplanet.de | DE
+CrispyCards | https://crispycards.de | DE
+Daesu Cards | https://daesu-cards.de | DE
+Deichcards | https://deichcards.de | DE
+Enma Cards | https://enmacards.de | DE
+Fantasia Cards | https://fantasiacards.de | DE
+Feenturm | https://feenturm.de | DE
+Figuya | https://figuya.com | DE
+Gamers Heaven | https://gamersheaven.de | DE
+Games Island | https://games-island.eu | DE
+Gate to the Games | https://www.gate-to-the-games.de | DE
+Geek Haven | https://geek-haven.de | DE
+Geeks Heaven | https://geeksheaven.de | DE
+GemCards | https://gemcards.de | DE
+Genkidama | https://genkidama.de | DE
+God of Cards | https://godofcards.com | DE
+Hall of Games TCG | https://hallofgamestcg.de | DE
+House of Cards and Games | https://house-of-cards-and-games.de | DE
+Kartenheinz | https://kartenheinz.de | DE
+Keepseven | https://keepseven.de | DE
+Kofuku | https://kofuku.de | DE
+KTCards | https://ktcards.de | DE
+Lext Cards | https://lextcards.de | DE
+LMS Handel | https://lms-handel.de | DE
+Lootcave | https://lootcave.de | DE
+Lotticards | https://www.lotticards.de | DE
+Luminous Cards | https://www.luminous.cards | DE
+Man of Games | https://www.man-of-games.de | DE
+MU Collectibles | https://www.mucollectibles.de | DE
+New Era TCG | https://newera-tcg.shop | DE
+Newbie Chest | https://newbiechest.com | DE
+Olli-Baba Sammelkarten | https://www.olli-baba.de | DE
+Play-Maniac | https://www.play-maniac.de | DE
+Pocabo | https://www.pocabo.de | DE
+Poke-Sammelshop | https://poke-sammelshop.de | DE
+PokeGeodude | https://pokegeodude.shop | DE
+Popa TCG | https://popatcg.de | DE
+RaveCards | https://ravecards.com | DE
+Rocket Card Store | https://www.rocketcardstore.de | DE
+Sapphire Cards | https://sapphire-cards.de | DE
+TC Trading Corner | https://www.tc-tradingcorner.de | DE
+TCG Shop Moers | https://www.tcgshop-moers.com | DE
+TCG-24 | https://tcg-24.de | DE
+TCGViert | https://tcgviert.com | DE
+Toy Treasure | https://toy-treasure.com | DE
+Underpaid Collectibles | https://underpaidcollectibles.com | DE
+Variety Cards | https://variety-cards.de | DE
+W3ltenbaum | https://w3ltenbaum.de | DE
+Webbas Kartenecke | https://webbas-kartenecke.de | DE
+Yonko TCG | https://yonko-tcg.de | DE
+Yugi-Oase | https://yugi-oase.de | DE
+Zuris Shop | https://www.zuris-shop.de | DE
+Zwergenfuerst | https://www.zwergenfuerst.de | DE
+Aition | https://www.aition.be | NL
+Akuma CGC | https://www.akumacgc.nl | NL
+Arly Trading | https://arlytrading.nl | NL
+BesCards | https://www.bescards.com | NL
+Card Binder | https://card-binder.com | NL
+Cardmaster Shop | https://www.cardmastershop.nl | NL
+CatchYourCards | https://catchyourcards.nl | NL
+De Spelvogel | https://www.despelvogel.com | NL
+Dracoon | https://dracoon.nl | NL
+EVLU TCG | https://evlutcg.com | NL
+Flash-Cards | https://flash-cards.be | NL
+GameCardsCentral | https://gamecardscentral.nl | NL
+GameToon | https://www.gametoon.nl | NL
+King Cards | https://www.kingcards.nl | NL
+Lich Cards | https://lichcards.nl | NL
+Madatsu TCG | https://madatsutcg.com | NL
+Magic Traders | https://magictraders.nl | NL
+Maximus | https://maximus.be | NL
+Oppa Cards | https://oppacards.com | NL
+Phantom Breaker | https://phantombreaker.eu | NL
+Pickapop | https://www.pickapop.nl | NL
+Pokeca.NL | https://pokeca.nl | NL
+PokeFamily | https://pokefamily.nl | NL
+RareCards | https://rarecards.nl | NL
+Renexx | https://www.renexx.nl | NL
+Speelkaartenwinkel | https://www.speelkaartenwinkel.nl | NL
+Spellenvariant | https://www.spellenvariant.nl | NL
+Spellenwinkel.nl | https://www.spellenwinkel.nl | NL
+Tafelridder | https://www.tafelridder.nl | NL
+TBH Store | https://www.tbhstore.nl | NL
+TCG Company | https://tcgcompany.nl | NL
+TCG Ground | https://www.tcg-ground.com | NL
+TCG Reus | https://www.tcgreus.nl | NL
+TCG-Cards.nl | https://www.tcg-cards.nl | NL
+TCGino | https://tcgino.nl | NL
+TCGKing | https://tcgking.nl | NL
+TCGMarkt | https://tcgmarkt.nl | NL
+TCGTriarch | https://www.tcgtriarch.com | NL
+TF-Robots | https://www.tf-robots.nl | NL
+Zaptoys | https://zaptoys.nl | NL
+ZyCards | https://zycards.nl | NL

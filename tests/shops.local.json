@@ -1,0 +1,45 @@
+{
+ "_note": "Start the fixture shops first: python tests/serve_fixtures.py",
+ "product_types": [
+  "display",
+  "case",
+  "special"
+ ],
+ "shops": [
+  {
+   "id": 1,
+   "name": "Fixture Shopify",
+   "country": "DE",
+   "platform": "auto",
+   "base_url": "http://127.0.0.1:8765",
+   "config": {
+    "max_pages": 1
+   }
+  },
+  {
+   "id": 2,
+   "name": "Fixture HTML",
+   "country": "NL",
+   "platform": "html",
+   "base_url": "http://127.0.0.1:8766",
+   "config": {
+    "urls": [
+     "http://127.0.0.1:8766/list.html"
+    ],
+    "item": ".product-box",
+    "title": ".product-name",
+    "price": ".product-price",
+    "status": ".delivery",
+    "assume_english": true
+   }
+  },
+  {
+   "id": 3,
+   "name": "Fixture Shopware (JSON-LD)",
+   "country": "DE",
+   "platform": "auto",
+   "base_url": "http://127.0.0.1:8767",
+   "config": {}
+  }
+ ]
+}

@@ -1,0 +1,4 @@
+web/config.php
+__pycache__/
+*.pyc
+.venv/

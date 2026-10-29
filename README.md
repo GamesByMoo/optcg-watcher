@@ -8,7 +8,7 @@ and e-mails you when a preorder drops below your limit.
 ```
 GitHub Actions (every 45 min)                 STRATO webspace (your domain)
 ┌───────────────────────────┐   GET config   ┌──────────────────────────────┐
-│ scraper/main.py           │ ─────────────▶ │ api/config.php   (token)     │
+│ scraper/main.py           │ ─────────────▶ │ api/shops.php    (token)     │
 │  · auto-detects each shop │                │ api/ingest.php   (token)     │──▶ MySQL
 │  · Shopify / WooCommerce  │ ─────────────▶ │   → price history            │
 │  · any shop via schema.org│                │                              │
@@ -172,7 +172,7 @@ web/                           upload this to STRATO
   index.php, history.php       offer lists, price history
   settings.php                 alerts, rules, shops, run log
   login.php, logout.php        password login
-  api/config.php, ingest.php   token-protected API for GitHub Actions
+  api/shops.php, ingest.php   token-protected API for GitHub Actions
   install.php                  one-time setup (delete afterwards)
   schema.sql                   database tables
   shops-de-nl.txt              starting shop list (imported by install.php)

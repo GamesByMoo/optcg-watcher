@@ -87,7 +87,7 @@ def main() -> int:
         with open(args.shops_file, encoding="utf-8") as f:
             cfg = json.load(f)
     else:
-        cfg = api("GET", "config.php")
+        cfg = api("GET", "shops.php")
 
     shops = cfg["shops"]
     if args.only_shop:

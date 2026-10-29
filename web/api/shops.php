@@ -1,5 +1,5 @@
 <?php
-// GET /api/config.php  -> active shops + settings for the scraper (token protected)
+// GET /api/shops.php  -> active shops + settings for the scraper (token protected)
 declare(strict_types=1);
 require __DIR__ . '/../lib/bootstrap.php';
 api_auth();

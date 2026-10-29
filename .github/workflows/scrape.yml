@@ -38,4 +38,11 @@ jobs:
           if [ -z "$OPT_API_URL" ] || [ -z "$OPT_API_TOKEN" ]; then
             echo "Not set up yet (secrets OPT_API_URL / OPT_API_TOKEN missing) - skipping."; exit 0
           fi
-          python scraper/main.py
+          set -o pipefail
+          if ! python scraper/main.py 2>&1 | tee scrape.log; then
+            echo "::error title=Scraper failed::$(tail -n 12 scrape.log | tr '\n' ' ' | cut -c1-1500)"
+            exit 1
+          fi
+          echo "::notice title=Result::$(grep -E '^(Checking|Done:|Ingest:)' scrape.log | tr '\n' ' ' | cut -c1-1500)"
+          fails=$(grep -E '\] ERR ' scrape.log | cut -c1-160 | head -n 40 | tr '\n' '~' | sed 's/~/ || /g')
+          [ -z "$fails" ] || echo "::warning title=Failed shops::$fails"

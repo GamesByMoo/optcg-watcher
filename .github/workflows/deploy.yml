@@ -29,7 +29,7 @@ jobs:
       OPT_API_TOKEN: ${{ secrets.OPT_API_TOKEN }}
       OPT_API_URL: ${{ secrets.OPT_API_URL }}
       MAIL_FROM: ${{ secrets.MAIL_FROM }}
-      REMOTE_DIR: ${{ vars.REMOTE_DIR || 'optcg' }}
+      REMOTE_DIR: ${{ vars.REMOTE_DIR || 'opwatch' }}
     steps:
       - uses: actions/checkout@v4
 

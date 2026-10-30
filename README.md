@@ -37,7 +37,7 @@ GitHub uploads the web app to STRATO and creates the database for you
 | `OPT_API_URL` | `https://your-domain.de/optcg` |
 | `MAIL_FROM` | a mailbox on your domain, e.g. `preorder-alarm@your-domain.de` |
 
-Optional repository *variable* `REMOTE_DIR` (default `opwatch`): the folder on the webspace.
+Optional repository *variable* `REMOTE_DIR` (default `website/opwatch`): the folder on the webspace.
 Then *Actions → Deploy web app to STRATO → Run workflow*. Every later change to `web/` is
 deployed automatically. `install.php` is not uploaded in this mode.
 

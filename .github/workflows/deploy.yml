@@ -78,6 +78,8 @@ jobs:
           touch resp.json
           cat resp.json || true; echo
           if [ "$code" != "200" ] || ! grep -q '"ok":true' resp.json; then
+            hostpart="${OPT_API_URL#*://}"; pathpart="/${hostpart#*/}"; [ "$pathpart" = "/$hostpart" ] && pathpart="(none)"
+            echo "::warning title=Address used::path after the domain = '$pathpart', total length ${#OPT_API_URL}, upload folder = '$REMOTE_DIR'"
             if grep -qi "domain reserved" resp.json; then
               echo "::error title=Domain not connected::$url shows the STRATO 'Domain reserved' page. Connect the domain to your webspace in the STRATO login (Domains -> Domainverwaltung)."
             else
